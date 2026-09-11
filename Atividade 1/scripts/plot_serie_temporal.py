@@ -10,7 +10,7 @@ df = pd.read_csv(DATASET_PATH, thousands=',')
 
 df['Date'] = pd.to_datetime(df[['Year', 'Month']].assign(Day=1))
 
-fig = px.scatter(
+fig = px.line(
     df,
     x='Date',
     y='Flt',
@@ -18,14 +18,7 @@ fig = px.scatter(
     labels={'Date': 'Ano', 'Flt': 'Número de Voos (Flt)'}
 )
 
-fig.update_traces(
-    marker=dict(
-        size=12,
-        color='#1f77b4',
-        opacity=0.7,
-        line=dict(width=0.5, color='black')
-    )
-)
+fig.update_traces(line=dict(width=5))
 
 fig.update_xaxes(
     dtick="M12",            # Define o intervalo em meses
@@ -35,10 +28,6 @@ fig.update_xaxes(
     tick0="2003-01-01"      # Define o ano inicial exato para alinhar as marcações
 )
 
-fig.update_layout(
-    font=dict(
-        size=24
-    )
-)
+fig.update_layout(font=dict(size=24))
 
 fig.show()
