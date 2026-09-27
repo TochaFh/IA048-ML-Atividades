@@ -2,20 +2,20 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import StratifiedKFold, GroupKFold, GridSearchCV
+from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from ml2.config import RANDOM_SEED
 
 
 def train_logistic_regression_cv(
-    X_train, 
-    y_train,
-    cv_splits, 
-    c_values, 
-    l1_ratios, 
-    max_iter=300,
-    tol=1e-2,
-    random_state=RANDOM_SEED
-):
+        X_train, 
+        y_train,
+        cv_splits, 
+        c_values, 
+        l1_ratios, 
+        max_iter=300,
+        tol=1e-2,
+        random_state=RANDOM_SEED
+        ):
     """Treina uma regressão logística e seleciona hiperparâmetros por validação cruzada (KFold).
 
     Avalia as combinações de ``C`` e ``l1_ratio`` (elastic net) usando validação cruzada
@@ -48,7 +48,8 @@ def train_logistic_regression_cv(
         cv=cv_strategy,
         scoring='f1_macro',
         n_jobs=-1,
-        return_train_score=True
+        return_train_score=True,
+        verbose=1 # Mostra um log de progresso no terminal
     )
 
     # treino

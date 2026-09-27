@@ -55,9 +55,33 @@ A qualidade de cada combinação ($C$, `l1_ratio`) foi aferida através do **F1-
 
 Uma vez identificada a combinação de hiperparâmetros com maior F1-Score Macro médio na validação cruzada, o modelo deve ser retreinado utilizando a totalidade do conjunto de treinamento e avaliado de forma definitiva no conjunto de teste independente.
 
-O código com a lógica principal da regressão está no arquivo `logistic_regression.py` enquanto as pipelines de treino para cada caso encontram-se em diferentes notebooks (`.ipynb`) na pasta `notebooks`.
+O código com a lógica principal da regressão está no arquivo `logistic_regression.py` enquanto as pipelines de treino / teste para cada caso encontram-se em diferentes notebooks (`.ipynb`) na pasta `notebooks`.
 
 ---
+
+## K-Nearest Neighbours (kNN)
+
+Para o kNN, adotou-se uma rotina de validação parecida, com validação cruzada K-Fold e análise de hiperparâmetros em grade com o f1-score macro.
+
+A lógica principal está no arquivo `knn.py` enquanto as pipelines de treino / teste foram colocadas em notebooks dedicados.
+
+### Validação Cruzada K-Fold
+O ajuste e a validação intermediária dos hiperparâmetros foram conduzidos através da técnica de **K-Fold Estratificado (K=5)** sobre o conjunto de treinamento, seguindo o mesmo padrão realizado para a regressão logística.
+
+### Configuração da Vizinhança e Cálculo de Distâncias
+Dado que o dataset conta com centenas de atributos extraídos dos sensores, o comportamento do algoritmo é fortemente dependente de como a distância geométrica é calculada e de como os vizinhos influenciam a decisão. Para isso, os seguintes hiperparâmetros foram mapeados:
+
+* **Métrica de Distância ($p$):** Baseada na métrica de Minkowski. Variou-se o parâmetro $p$ para testar o comportamento do modelo com a distância **Euclidiana ($p$=2)** e a de **Manhattan ($p$=1)**, geralmente mmelhor contra a esparsidade gerada pela maldição da dimensionalidade.
+* **Esquema de Votação (`weights`):** 
+  * **Uniforme (`uniform`):** Todos os vizinhos selecionados contribuem com o mesmo peso (voto majoritário simples).
+  * **Ponderado pela Distância (`distance`):** O peso do voto de cada vizinho é inversamente proporcional à sua distância até a amostra de teste, conferindo maior influência aos pontos mais próximos.
+* **Número de Vizinhos ($k$):** Controla o raio de influência local. Valores baixos de $k$ capturam padrões altamente específicos (mas ficam sujeitos a ruídos locais), enquanto valores elevados de $k$ suavizam as fronteiras de decisão.
+
+### Avaliação da Grade de Hiperparâmetros e Métrica de Desempenho
+
+Para determinar a configuração com máximo poder preditivo, realizou-se uma busca em grade (*grid search*) avaliando as combinações do número de vizinhos ($k$), da métrica de distância ($p$) e da função de peso (`weights`).
+
+Assim como para a regressão logística, a qualidade de cada combinação foi aferida através do **F1-Score Macro médio** obtido nos 5 *folds* de validação cruzada, para posteriormente usar todo o conjunto de treino no modelo final. Desta vez, além de um plot de grid, foi feito um plot das linhas de evolução do score em função de $k$.
 
 ## Referências
 
