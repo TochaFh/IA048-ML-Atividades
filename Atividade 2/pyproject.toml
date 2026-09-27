@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ia048-ml2"
+version = "0.1.0"
+dependencies = [
+    "numpy",
+    "pandas",
+    "plotly",
+    "scikit-learn",
+    "nbformat",
+]
+
+[tool.setuptools]
+packages = ["ml2"]

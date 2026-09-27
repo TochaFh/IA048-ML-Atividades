@@ -1,0 +1,20 @@
+from pathlib import Path
+
+RANDOM_SEED = 42
+
+# paths
+PROJ_ROOT = Path(__file__).resolve().parents[1]
+
+DATA_DIR = PROJ_ROOT / "data"
+UCI_HAR_DIR = DATA_DIR / "UCI_HAR"
+
+TRAIN_UCI_HAR_DIR = UCI_HAR_DIR / "train"
+TEST_UCI_HAR_DIR = UCI_HAR_DIR / "test"
+
+TRAIN_UCI_HAR_INERTIAL_DIR = TRAIN_UCI_HAR_DIR / "Inertial Signals"
+TEST_UCI_HAR_INERTIAL_DIR = TEST_UCI_HAR_DIR / "Inertial Signals"
+
+PREPROCESSED_DIR = DATA_DIR / "preprocessed"
+
+PREPROCESSED_TRAIN_DIR = PREPROCESSED_DIR / "train"
+PREPROCESSED_TEST_DIR = PREPROCESSED_DIR / "test"

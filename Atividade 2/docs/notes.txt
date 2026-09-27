@@ -1,0 +1,20 @@
+- Regressão Logística
+
+regularização?
+validação cruzada?
+early stopping?
+
+usar softmax?
+
+
+
+- kNN
+
+métrica de distância?
+qual será o k? análise do melhor k? - opção: validação cruzada baseada em q-pastas (k-fold?) (tem outras opções?)
+estratégia de agregação dos vizinhos aos rótulos
+
+
+
+************
+Subject Leakage vs. Class Balance
