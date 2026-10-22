@@ -1,4 +1,4 @@
-# IA048 - Atividade 1 - Regressão Linear
+# IA048 - Atividade 2 - Classificação
 
 Prof. Levy Boccato
 
