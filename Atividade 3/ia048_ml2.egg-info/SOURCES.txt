@@ -5,4 +5,6 @@ ia048_ml2.egg-info/dependency_links.txt
 ia048_ml2.egg-info/requires.txt
 ia048_ml2.egg-info/top_level.txt
 ml3/__init__.py
+ml3/cnn_bc.py
 ml3/config.py
+ml3/mlp_a.py
