@@ -1,9 +1,8 @@
 from pathlib import Path
 
-RANDOM_SEED = 42
+RANDOM_SEED = 13
 
 # paths
 PROJ_ROOT = Path(__file__).resolve().parents[1]
 
 DATA_DIR = PROJ_ROOT / "data"
-

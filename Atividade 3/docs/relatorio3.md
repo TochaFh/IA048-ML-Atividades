@@ -125,7 +125,77 @@ Os erros se concentram em torno do **granulócito imaturo**: 50 basófilos (20%)
 
 Total: $6 \times 3 = 18$ configurações.
 
+### Validação
 
+<div align="center">
+  <img src="../images/bc/tabela_val.png" width="28%">
+  <img src="../images/bc/heatmap_validacao.png" width="71%">
+</div>
+
+\
+A melhor configuração foi $K = 256$, $k = 3 \times 3$ (acurácia balanceada de validação 0,9142). Observa-se que:
+
+- **Todas as 18 CNNs superaram a melhor MLP:** a pior ($K = 8$, $k = 5$) obteve 0,8302. A melhor CNN tem ≈ 409 mil parâmetros, contra ≈ 1,21 milhão da melhor MLP. A vantagem vem do fato de a convolução levar em consideração a localidade, com compartilhamento de pesos, o que não ocorre na MLP.
+- **Mais kernels ajudam, com retorno decrescente:** Para $k = 3$, a acurácia sobe de 0,8352 ($K = 8$) para 0,8793 ($K = 16$) e depois ganha só ≈ 0,7 a 1 p.p. a cada duplicação. Para $k = 5$ o ganho satura entre $K = 128$ e $256$ (0,9051 → 0,9066).
+- **Kernels 3×3 e 5×5 têm desempenho muito próximo:** (diferença < 1 p.p. para $K \le 128$), com leve vantagem do 3×3 em $K = 256$.
+- **O kernel 7×7 foi quase sempre pior** (para $K \ge 16$)**:** Não necessariamente melhora junto com o aumento de kernels, há um platô, aparentemente. Uma hipótese para isso é que filtros maiores (147 pesos por filtro, contra 27 do 3×3) favorecem *overfitting* ou suavizam detalhes finos em imagens de 28×28; comparar a acurácia de treino e de validação confirmaria isso.
+
+
+- **Limite do grid e caminhos para melhorar:** O melhor resultado está na borda do grid ($K = 256$), então valores maiores de $K$ provavelmente renderiam um pouco mais. Entretanto, provavelmente esse não é o caminho mais indicado para melhorar o desempenho do modelo. O ganho por duplicação já é pequeno, enquanto o custo cresce linearmente com $K$ (a camada de saída passa de ≈ 100 mil parâmetros com $K = 64$ para ≈ 401 mil com $K = 256$). Alternativas que fogem da restrição de uma única camada convolucional, mas que tendem a ser mais eficientes, são empilhar mais camadas convolucionais (aumentando o campo receptivo efetivo com poucos parâmetros) e combinar kernels de tamanhos diferentes na mesma camada, no estilo Inception. Esta segunda opção é sugerida pelos próprios resultados: 3×3 e 5×5 têm desempenho parecido e o 7×7 só ajuda quando há poucos kernels, o que indica que escalas diferentes captam informação complementar.
+
+## Item C
+
+
+
+
+## Item C
+
+A melhor configuração da busca ($K = 256$, $k = 3 \times 3$) foi retreinada do zero, com o uma seed no valor gerado aleatoriamente: 13. Este novo treino atingiu 0,9078 de acurácia balanceada na validação.
+
+```
+Acurácia Balanceada (Validação):    0.9078
+```
+
+O conjunto de teste foi avaliado uma única vez com esse modelo.
+
+### Teste
+
+A CNN obteve acurácia balanceada de **0,8892** e F1 macro de **0,8929** (acurácia simples ≈ 0,906). A queda de 1,9 p.p. em relação à validação é esperada, pois o modelo (época e configuração) foi escolhido pela própria validação. Vale notar que a execução da busca, com a mesma configuração, havia obtido 0,9069 no teste: as métricas têm variabilidade de ≈ 1 a 2 p.p. entre execuções, e os resultados aqui são de uma única execução.
+
+```txt
+Acurácia Balanceada (Teste):    0.8892
+F1-Score Macro (Teste):         0.8929
+```
+
+![](../images/bc/matriz_conf.png)
+
+| Classe | Precisão | Recall | F1 |
+| :--- | :---: | :---: | :---: |
+| Basófilo | 0,870 | 0,881 | 0,876 |
+| Eosinófilo | 0,962 | 0,979 | 0,971 |
+| Eritroblasto | 0,891 | 0,923 | 0,907 |
+| Granulócito Imaturo | 0,762 | 0,845 | 0,801 |
+| Linfócito | 0,879 | 0,893 | 0,886 |
+| Monócito | 0,886 | 0,655 | 0,753 |
+| Neutrófilo | 0,969 | 0,940 | 0,954 |
+| Plaqueta | 0,994 | 0,998 | 0,996 |
+
+As classes mais fáceis são plaqueta (recall 99,8%), eosinófilo (97,9%) e neutrófilo (94,0%). O ponto mais fraco é o **monócito**, com recall de apenas 65,5%: 83 das 284 amostras (29%) foram classificadas como granulócito imaturo, enquanto o erro inverso é bem menor (18 granulócitos imaturos classificados como monócito). Ou seja, a rede tem viés de "atrair" para o granulócito imaturo, que tem a menor precisão (76,2%). Os erros desse último são espalhados: basófilo (20), monócito (18), eritroblasto (14), linfócito (14) e neutrófilo (13), e basófilos, linfócitos e neutrófilos também foram confundidos com ele (20, 17 e 18). Ao todo, ≈ 76% dos 321 erros envolvem o granulócito imaturo, como classe real ou predita.
+
+### Padrões classificados incorretamente
+
+![](../images/bc/exemplo_incorreto.png)
+
+Os erros mostram comportamentos distintos da rede:
+
+- **Erros confiantes (2, 4 e 5):** a rede atribui 96%, 89% e 78% à classe errada, e à classe real quase nada (≈ 0%, 9% e 3%). O Softmax, portanto, não é um bom indicador de incerteza: a rede pode errar com convicção.
+- **Erros ambíguos (1 e 3):** no 1, a probabilidade se divide entre eritroblasto (47%) e linfócito (37%), duas células pequenas de núcleo redondo e denso. No 3, a distribuição é praticamente plana, com cinco classes entre 12% e 25% (basófilo, linfócito, granulócito imaturo, neutrófilo e monócito), o que indica que a rede não identificou a classe.
+
+Visualmente, a amostra 2 mostra uma célula fora do centro, com lobos do núcleo cortados nas bordas da imagem, e a amostra 3 tem núcleo em formato de incomum, sem a segmentação típica de um neutrófilo maduro. Nas amostras 4 e 5 o núcleo é grande, arredondado e sem o típico "*gap*" visível, o que pode explicar a confusão com o granulócito imaturo.
+
+Em resumo, os erros restantes se concentram em classes morfologicamente próximas, em que a diferença está em detalhes finos do núcleo e da cromatina, que a resolução de 28×28 preserva mal, além de amostras mal centradas ou ambíguas. Melhorar o desempenho exigiria modelos mais expressivos (mais camadas, múltiplas escalas) ou maior resolução.
+
+---
 
 ## Referências
 
