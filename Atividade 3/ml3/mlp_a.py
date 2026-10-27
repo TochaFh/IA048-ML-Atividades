@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
-from sklearn.metrics import balanced_accuracy_score
+import numpy as np
+from sklearn.metrics import balanced_accuracy_score, f1_score, confusion_matrix
 
 class BloodMNISTMLP(nn.Module):
     """
@@ -124,6 +125,7 @@ def train_and_validate(model: BloodMNISTMLP, train_loader, val_loader, criterion
         
     return model, best_val_acc
 
+# helper
 def wrap_train_and_validate(h_dim, dropout_p, lr, train_loader, val_loader, device):
     model = BloodMNISTMLP(hidden_dim=h_dim, dropout_prob=dropout_p)
     criterion = nn.CrossEntropyLoss()
@@ -177,3 +179,64 @@ def fit_mlp(train_loader, val_loader, device, hidden_dims = [128, 256, 512], lrs
     print("==========================================")
 
     return results
+
+def evaluate_model(model, data_loader, device='cpu') -> dict:
+    """
+    Executa a inferência de um modelo PyTorch sobre um DataLoader 
+    e retorna as predições, gabaritos, probabilidades e métricas principais.
+    
+    Parâmetros:
+    -----------
+    model : nn.Module
+        Modelo treinado (ex: BloodMNISTMLP).
+    data_loader : DataLoader
+        DataLoader de teste ou validação.
+    device : torch.device ou str
+        Dispositivo onde a computação será realizada ('cuda' ou 'cpu').
+
+    Retorna:
+    --------
+    dict: Dicionário com 'targets', 'preds', 'probs', 'bal_acc', 'f1_macro' e 'cm'.
+    """
+    model.to(device)
+    model.eval()  # Desativa Dropout e ajusta BatchNorm se houver
+    
+    all_preds = []
+    all_targets = []
+    all_probs = []
+    
+    with torch.no_grad():  # Desativa cálculo de gradientes
+        for images, labels in data_loader:
+            images = images.to(device)
+            labels = labels.view(-1).long().to(device)
+            
+            # Forward pass (logits brutos)
+            logits = model(images)
+            
+            # Softmax explícito
+            probs = torch.softmax(logits, dim=1)
+            
+            # Argmax para pegar a classe predita
+            preds = torch.argmax(probs, dim=1)
+            
+            all_preds.extend(preds.cpu().numpy())
+            all_targets.extend(labels.cpu().numpy())
+            all_probs.extend(probs.cpu().numpy())
+            
+    all_preds = np.array(all_preds)
+    all_targets = np.array(all_targets)
+    all_probs = np.array(all_probs)
+    
+    # Cálculo das métricas
+    bal_acc = balanced_accuracy_score(all_targets, all_preds)
+    f1_macro = f1_score(all_targets, all_preds, average='macro')
+    cm = confusion_matrix(all_targets, all_preds)
+    
+    return {
+        'targets': all_targets,
+        'preds': all_preds,
+        'probs': all_probs,
+        'bal_acc': bal_acc,
+        'f1_macro': f1_macro,
+        'cm': cm
+    }

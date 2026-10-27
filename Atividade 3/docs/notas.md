@@ -22,6 +22,8 @@ flowchart LR
 | **Função de Custo** | Entropia Cruzada Multiclasse | Aplica o Softmax internamente com estabilidade numérica. |
 | **Otimizador** | Adam | Algoritmo com taxas de aprendizado adaptativas e rápida convergência. |
 | **Regularização $L_2$** | weight_decay = $10^{-4}$ | Valor fixado para restringir a magnitude dos pesos e evitar *overfitting*. |
+| **Número de Épocas** | $20$ épocas | Garante iterações suficientes para a convergência das curvas de perda. |
+| **Tamanho do Lote (*Batch Size*)** | $256$ amostras | Equilibra a velocidade de processamento na CPU e a estabilidade da estimativa do gradiente. |
 
 
 ### Hiperparâmetros Explorados na Validação (MLP)
