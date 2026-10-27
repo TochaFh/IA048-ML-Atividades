@@ -32,15 +32,17 @@ def count_parameters(model):
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     return total_params, trainable_params
 
-
 def train_and_validate_transfer(model, train_loader, val_loader, criterion, optimizer, epochs=15, device='cpu'):
     """
-    Treina a ResNet-18 e monitora o tempo de execução e a melhor acurácia na validação.
+    Treina a ResNet-18 e monitora o tempo de execução, a melhor acurácia na validação
+    e o histórico por época (loss de treino, loss de validação e acurácia balanceada).
     """
     model.to(device)
     best_val_acc = 0.0
     best_model_weights = None
     start_time = time.time()
+
+    history = {'train_loss': [], 'val_loss': [], 'val_bal_acc': []}
 
     for epoch in range(epochs):
         model.train()
@@ -58,21 +60,30 @@ def train_and_validate_transfer(model, train_loader, val_loader, criterion, opti
             
             running_loss += loss.item() * images.size(0)
 
+        train_loss = running_loss / len(train_loader.dataset)
+
         # Validação
         model.eval()
         val_preds, val_targets = [], []
+        val_running_loss = 0.0
         
         with torch.no_grad():
             for images, labels in val_loader:
                 images = images.to(device)
                 labels = labels.to(device).squeeze().long()
                 outputs = model(images)
+                val_running_loss += criterion(outputs, labels).item() * images.size(0)
                 preds = torch.argmax(outputs, dim=1)
                 
                 val_preds.extend(preds.cpu().numpy())
                 val_targets.extend(labels.cpu().numpy())
                 
+        val_loss = val_running_loss / len(val_loader.dataset)
         val_acc = balanced_accuracy_score(val_targets, val_preds)
+
+        history['train_loss'].append(train_loss)
+        history['val_loss'].append(val_loss)
+        history['val_bal_acc'].append(val_acc)
 
         if val_acc > best_val_acc:
             best_val_acc = val_acc
@@ -83,7 +94,8 @@ def train_and_validate_transfer(model, train_loader, val_loader, criterion, opti
     if best_model_weights is not None:
         model.load_state_dict(best_model_weights)
         
-    return model, best_val_acc, total_time
+    return model, best_val_acc, total_time, history
+
 
 
 def evaluate_model(model, data_loader, device='cpu'):
