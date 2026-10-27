@@ -70,19 +70,68 @@ A tabela e o gráfico mostram o desempenho das 12 configurações:
 \
 A melhor configuração foi N_oculta = 512, dropout = 0 (acurácia balanceada de validação 0,8194). Observa-se que:
 
+- **Dropout não ajudou:** Para as três larguras, p = 0 foi a melhor opção e p = 0,5 a pior, com queda grande (0,7048 para 512 e 0,6161 para 128). Isso sugere que, nesta faixa, o fator limitante é a capacidade do modelo e não o *overfitting*: desligar neurônios de uma camada já pequena reduz a capacidade efetiva sem trazer ganho de generalização perceptível.
+- **O efeito da largura é menos claro.** Com p = 0, a acurácia cresce com N_oculta (0,7853 → 0,7915 → 0,8194), mas o salto de 128 para 256 é pequeno (0,6 p.p.) e a ordem se inverte em outros casos (com p = 0,3, a rede de 256 neurônios ficou abaixo da de 128). Como cada configuração foi treinada uma única vez e a validação tem 1.712 amostras, diferenças de poucos pontos percentuais não devem ser interpretadas como significativas. O destaque de 512/p = 0 (2,8 p.p. acima da segunda colocada) é o resultado mais robusto da busca, mas essa configuração está na borda do grid, então larguras maiores poderiam render um pouco mais.
 
 ### Teste
 
-[imagem matriz de confusão e métricas (acc bal. e f1)]
+Utilizando os pesos do melhor modelo treinado (maior acurácia na validação), os seguintes resultados foram obtidos para o teste:
 
-[Análise dos resultados]
+```txt
+Acurácia Balanceada (Teste):    0.7953
+F1-Score Macro (Teste):         0.7952
+```
+
+![](../images/a/matriz_conf.png)
+
+No teste, o modelo atingiu acurácia balanceada de **0,7953** e F1 macro de **0,7952** (acurácia simples ≈ 0,817). A queda em relação à validação (0,8194) é esperada: esse valor foi o máximo sobre épocas e configurações, logo é levemente otimista.
+
+O desempenho varia bastante entre classes:
+
+- **Melhores:** plaqueta (recall 99,4%), eosinófilo (92,3%), neutrófilo (85,4%) e linfócito (83,5%), classes com aparência mais distintiva (tamanho, cor, grânulos).
+- **Piores:** basófilo (63,5%), monócito (67,6%) e granulócito imaturo (68,6%).
+
+Os erros se concentram em torno do **granulócito imaturo**: 50 basófilos (20%) e 61 monócitos (21%) foram classificados como ele, e ele próprio foi confundido com monócito (64), basófilo (45) e neutrófilo (26); 51 neutrófilos também foram rotulados como granulócito imaturo. Por isso sua precisão é de apenas 64,6%. Biologicamente, essas classes diferem principalmente na forma do núcleo e na textura fina dos grânulos, informação espacial que se perde na resolução 28×28 e, principalmente, no achatamento (*flatten*), que descarta a vizinhança entre pixels. Isso motiva o uso de CNNs, que exploram localidade e compartilhamento de pesos.
 
 ---
+
+## Item B
+
+### Tabela - Decisões Fixadas de Projeto (CNN)
+
+| Configuração | Escolha / Valor | Justificativa |
+| :--- | :--- | :--- |
+| **Formato de Entrada** | Tensor $3 \times 28 \times 28$ | Preserva a vizinhança espacial e os 3 canais RGB; diferentemente da MLP, a imagem não é achatada na entrada. |
+| **Pré-processamento** | Escalonamento em $[0.0, 1.0]$ | Mesmo da MLP (divisão por $255$ via `ToTensor()`), para comparação direta. Sem normalização por média/desvio e sem aumento de dados. |
+| **Nº de Camadas Convolucionais** | Exatamente $1$ camada | Exigência da atividade. |
+| **Ativação** | ReLU ($\max(0, x)$) | Mesma justificativa do Item A: não linearidade simples, com gradiente 1 para $x > 0$. |
+| **Padding** | *Same* ($P = \frac{k-1}{2}$) | Mantém $28 \times 28$ após a convolução para qualquer $k$. Assim, a entrada da camada densa ($K \cdot 14 \cdot 14$) depende só de $K$, e a comparação entre tamanhos de kernel isola o efeito do campo receptivo. |
+| **Passo da Convolução** | $S = 1$ | Cada kernel percorre todas as posições, sem perder resolução antes do pooling. |
+| **Pooling** | Max-Pooling $2 \times 2$ ($S = 2$) | Reduz $28 \times 28 \to 14 \times 14$, o que diminui em $75\%$ o número de ativações (e de pesos da camada de saída) e dá tolerância a pequenos deslocamentos. Janela pequena porque a imagem já tem baixa resolução. |
+| **Camada de Saída** | Linear: $K \cdot 14 \cdot 14 \to 8$ *logits* | Sem camada densa intermediária: a camada convolucional é a única responsável pela extração de atributos. Sem Softmax no *forward*. |
+| **Dropout** | Não utilizado | No Item A o dropout não trouxe ganho (melhor resultado com $p = 0$); a regularização fica a cargo do $L_2$. |
+| **Função de Custo** | Entropia Cruzada Multiclasse | Igual ao Item A (Softmax interno, numericamente estável). |
+| **Otimizador e $L_2$** | Adam, `weight_decay` = $10^{-4}$ | Mesmos do Item A; o valor de $L_2$ é o usual e não foi ajustado. |
+| **Taxa de Aprendizado ($\eta$)** | $10^{-3}$ | Mesma do Item A. Não foi revalidada para a CNN. |
+| **Tamanho do Lote** | $64$ amostras | Igual ao Item A, mantendo o mesmo número de atualizações por época. |
+| **Número de Épocas** | $20$ épocas | Mesmo orçamento do Item A, para comparação justa entre as 18 configurações. Os pesos da melhor época (acurácia balanceada de validação) são restaurados. |
+
+### Tabela - Hiperparâmetros Explorados na Validação (CNN)
+
+| Hiperparâmetro | Valores Candidatos | Propósito da Exploração |
+| :--- | :--- | :--- |
+| **Quantidade de Kernels ($K$)** | $\{8, 16, 32, 64, 128, 256\}$ | Número de detectores de atributos aprendidos em paralelo (profundidade dos *feature maps*), que também define o tamanho da camada de saída ($K \cdot 196 \cdot 8$ pesos). Progressão em potências de 2, de uma representação mínima a uma bastante redundante. |
+| **Tamanho do Kernel ($k \times k$)** | $\{3 \times 3, 5 \times 5, 7 \times 7\}$ | Escala do campo receptivo local: $\approx 10{,}7\%$, $17{,}9\%$ e $25{,}0\%$ da largura da imagem. Kernels pequenos tendem a captar detalhes finos (bordas, texturas) e maiores, estruturas mais amplas, o que será verificado nos resultados. Só valores ímpares, para que o *same padding* seja simétrico. |
+
+Total: $6 \times 3 = 18$ configurações.
+
+
 
 ## Referências
 
 1. TochaFh/IA048-ML-Atividades (repositório com as atividades na disciplina IA048 em 2s2026) https://github.com/TochaFh/IA048-ML-Atividades
-2. Paszke et al., PyTorch: An Imperative Style, High-Performance Deep Learning Library, NeurIPS 2019. Também falta citar o BloodMNIST (Yang et al., MedMNIST v2, Scientific Data, 2023).
+2. Paszke et al., PyTorch: An Imperative Style, High-Performance Deep Learning Library, NeurIPS 2019.
 3. Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011. https://scikit-learn.org/stable/
 4. Plotly-express. https://plotly.com/python/plotly-express/
 5. Cookiecutter Data Science. https://cookiecutter-data-science.drivendata.org/
+6. Yang et al., MedMNIST v2, Scientific Data, 2023
