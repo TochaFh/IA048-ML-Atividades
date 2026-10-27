@@ -13,6 +13,7 @@ dependencies = [
     "scikit-learn",
     "nbformat",
     "ipykernel",
+    "torch",
     "medmnist",
 ]
 

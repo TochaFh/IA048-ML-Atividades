@@ -112,7 +112,9 @@ def train_and_validate(model: BloodMNISTMLP, train_loader, val_loader, criterion
         # Salvar o melhor modelo com base na Acurácia Balanceada de Validação
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            best_model_weights = model.state_dict().copy()
+            #best_model_weights = model.state_dict().copy()
+            best_model_weights = {k: v.clone() for k, v in model.state_dict().items()} 
+                                #copy.deepcopy(model.state_dict())
 
         #print(f"Época [{epoch+1}/{epochs}] | "
         #      f"Treino Loss: {train_loss:.4f} | "
