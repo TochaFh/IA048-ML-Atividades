@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>relatorio3</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<h1
+id="ia048---atividade-3---redes-neurais-artificiais-mlps-e-cnns">IA048 -
+Atividade 3 - Redes Neurais Artificiais: MLPs e CNNs</h1>
+<p>Prof. Levy Boccato</p>
+<p><strong>Aluno:</strong> Rafael Campideli Hoyos (175100).</p>
+<hr />
+<h2 id="introdução">Introdução</h2>
+<p>Para a realização da atividade foram usadas ferramentas python,
+destacando o uso de <code>PyTorch</code> <a href="#referências">[2]</a>
+e <code>Scikit-Learn</code> <a href="#referências">[3]</a> (para treino
+dos modelos e obtenção de métricas) e <code>Plotly</code> <a
+href="#referências">[4]</a> (para plotagens de gráficos e tabelas). Os
+códigos e demais arquivos utilizados/confeccionados neste trabalho foram
+organizados em uma estrutura simplificada da <em>Cookiecutter Data
+Science</em> <a href="#referências">[5]</a> e estão disponíveis no
+<em>GitHub</em> no repositório <a
+href="https://github.com/TochaFh/IA048-ML-Atividades"><strong>TochaFh/IA048-ML-Atividades</strong></a>
+<a href="#referências">[1]</a>.</p>
+<hr />
+<h2 id="item-a">Item A</h2>
+<p>Foi projetada uma MLP com exatamente uma camada oculta para
+classificar as 8 classes do BloodMNIST (imagens 28×28×3, partições
+oficiais de treino/validação/teste: 11.959/1.712/3.421). Cada
+configuração do grid de hiperparâmetros foi treinada por 20 épocas com
+Adam e entropia cruzada, e comparada pela acurácia balanceada na
+validação, métrica escolhida porque as classes são desbalanceadas.</p>
+<p>O projeto da MLP pode ser resumido em duas tabelas: decisões / hiper
+parâmetros fixados e explorados.</p>
+<h4 id="tabela---decisões-fixadas-de-projeto-mlp">Tabela - Decisões
+Fixadas de Projeto (MLP):</h4>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Configuração</th>
+<th style="text-align: left;">Escolha / Valor</th>
+<th style="text-align: left;">Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Dimensão de Entrada</strong></td>
+<td style="text-align: left;"><span class="math inline">2352</span>
+neurônios</td>
+<td style="text-align: left;">Achatamento (<em>Flatten</em>) da imagem
+colorida de <span class="math inline">28 × 28 × 3</span> pixels.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Pré-processamento</strong></td>
+<td style="text-align: left;">Escalonamento em <span
+class="math inline">[0.0, 1.0]</span></td>
+<td style="text-align: left;">Divisão dos pixels por <span
+class="math inline">255</span>. Mantém as entradas em faixa limitada, o
+que estabiliza a otimização com a inicialização padrão do PyTorch. Não
+foi aplicada normalização por média/desvio.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Nº de Camadas
+Ocultas</strong></td>
+<td style="text-align: left;">Exatamente <span
+class="math inline">1</span> camada</td>
+<td style="text-align: left;">Exigência da atividade.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Ativação
+Intermediária</strong></td>
+<td style="text-align: left;">ReLU (<span
+class="math inline">max (0, <em>x</em>)</span>)</td>
+<td style="text-align: left;">Não linearidade simples e barata, com
+gradiente 1 para x &gt; 0, o que mitiga o desvanecimento de gradiente em
+relação a sigmoide/tanh.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Camada de Saída</strong></td>
+<td style="text-align: left;"><span class="math inline">8</span>
+neurônios (<em>Logits</em> brutos)</td>
+<td style="text-align: left;">Corresponde às 8 classes de células
+sanguíneas, sem ativação no <em>forward</em>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Função de Custo</strong></td>
+<td style="text-align: left;">Entropia Cruzada Multiclasse</td>
+<td style="text-align: left;">Aplica o Softmax internamente com
+estabilidade numérica.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Otimizador</strong></td>
+<td style="text-align: left;">Adam</td>
+<td style="text-align: left;">Algoritmo com taxas de aprendizado
+adaptativas e rápida convergência.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Regularização <span
+class="math inline"><em>L</em><sub>2</sub></span></strong></td>
+<td style="text-align: left;">weight_decay = <span
+class="math inline">10<sup>−4</sup></span></td>
+<td style="text-align: left;">Valor comum em experimentos de treinamento
+de redes neurais, adotado aqui sem exploração adicional.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Taxa de Aprendizado (<span
+class="math inline"><em>η</em></span>)</strong></td>
+<td style="text-align: left;"><span
+class="math inline">10<sup>−3</sup></span></td>
+<td style="text-align: left;">Em uma exploração preliminar, <span
+class="math inline">10<sup>−4</sup></span> teve um desempenho pior em
+todos os casos testados, provavelmente por convergência lenta em 20
+épocas. Para reduzir o tamanho da busca, então, optou-se por fixar <span
+class="math inline">10<sup>−3</sup></span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Número de Épocas</strong></td>
+<td style="text-align: left;"><span class="math inline">20</span>
+épocas</td>
+<td style="text-align: left;">Compromisso entre custo computacional (12
+configurações) e convergência com <span
+class="math inline"><em>η</em> = 10<sup>−3</sup></span>. A melhor época
+é escolhida pela acurácia balanceada de validação.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Tamanho do Lote (<em>Batch
+Size</em>)</strong></td>
+<td style="text-align: left;"><span class="math inline">64</span>
+amostras</td>
+<td style="text-align: left;">Lotes pequenos dão mais atualizações por
+época e o ruído do gradiente atua como regularização leve, o que
+favorece a convergência em apenas 20 épocas.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tabela---hiperparâmetros-explorados-na-validação-mlp">Tabela -
+Hiperparâmetros Explorados na Validação (MLP)</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Hiperparâmetro</th>
+<th style="text-align: left;">Valores Candidatos</th>
+<th style="text-align: left;">Propósito da Exploração</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Neurônios Ocultos (<span
+class="math inline"><em>N</em><sub>oculta</sub></span>)</strong></td>
+<td style="text-align: left;"><span
+class="math inline">{128, 256, 512}</span></td>
+<td style="text-align: left;">Avaliar o impacto da capacidade de
+representação e complexidade da rede.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Probabilidade de Dropout (<span
+class="math inline"><em>p</em></span>)</strong></td>
+<td style="text-align: left;"><span
+class="math inline">{0.0, 0.2, 0.3, 0.5}</span></td>
+<td style="text-align: left;">Investigar o efeito da inativação
+aleatória de neurônios na generalização.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="diagrama-da-mlp">Diagrama da MLP</h4>
+<p>Para melhor entender a MLP projetada veja o diagrama abaixo:</p>
+<pre class="mermaid"><code>flowchart LR
+    A[&quot;Entrada:\n&gt; imagem (28 x 28 x 3)&quot;] --&gt; B[&quot;Achatamento (flatten)\n&gt; [2352]&quot;]
+    B --&gt; C[&quot;Camada Oculta: Linear + ReLU + Dropout(p)\n&gt; [N_oculta]&quot;]
+    C --&gt; D[&quot;Camada de Saída: Linear\n&gt; 8 Logits&quot;]
+    
+    D -- &quot;Treino&quot; --&gt; E[&quot;Entropia Cruzada (Softmax Interno + Loss)&quot;]
+    D -- &quot;Teste / Inferência&quot; --&gt; F[&quot;Softmax Explícito\n&gt; Argmax&quot;]
+    
+    F --&gt; G[&quot;&gt; Classe Predita (0 a 7)\n&gt; Métricas (Acurácia, F1, Matriz)&quot;]</code></pre>
+<h3 id="validação">Validação</h3>
+A tabela e o gráfico mostram o desempenho das 12 configurações:
+<div data-align="center">
+<p><img src="../images/a/tabela_val.png" width="18%">
+<img src="../images/a/parallel_val.png" width="80%"></p>
+</div>
+<p><br />
+A melhor configuração foi N_oculta = 512, dropout = 0 (acurácia
+balanceada de validação 0,8194). Observa-se que:</p>
+<ul>
+<li><strong>Dropout não ajudou:</strong> Para as três larguras, p = 0
+foi a melhor opção e p = 0,5 a pior, com queda grande (0,7048 para 512 e
+0,6161 para 128). Isso sugere que, nesta faixa, o fator limitante é a
+capacidade do modelo e não o <em>overfitting</em>: desligar neurônios de
+uma camada já pequena reduz a capacidade efetiva sem trazer ganho de
+generalização perceptível.</li>
+<li><strong>O efeito da largura é menos claro.</strong> Com p = 0, a
+acurácia cresce com N_oculta (0,7853 → 0,7915 → 0,8194), mas o salto de
+128 para 256 é pequeno (0,6 p.p.) e a ordem se inverte em outros casos
+(com p = 0,3, a rede de 256 neurônios ficou abaixo da de 128). Como cada
+configuração foi treinada uma única vez e a validação tem 1.712
+amostras, diferenças de poucos pontos percentuais não devem ser
+interpretadas como significativas. O destaque de 512/p = 0 (2,8 p.p.
+acima da segunda colocada) é o resultado mais robusto da busca, mas essa
+configuração está na borda do grid, então larguras maiores poderiam
+render um pouco mais.</li>
+</ul>
+<h3 id="teste">Teste</h3>
+<p>Utilizando os pesos do melhor modelo treinado (maior acurácia na
+validação), os seguintes resultados foram obtidos para o teste:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode txt"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Acurácia Balanceada (Teste):    0.7953</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>F1-Score Macro (Teste):         0.7952</span></code></pre></div>
+<p><img src="../images/a/matriz_conf.png" /></p>
+<p>No teste, o modelo atingiu acurácia balanceada de
+<strong>0,7953</strong> e F1 macro de <strong>0,7952</strong> (acurácia
+simples ≈ 0,817). A queda em relação à validação (0,8194) é esperada:
+esse valor foi o máximo sobre épocas e configurações, logo é levemente
+otimista.</p>
+<p>O desempenho varia bastante entre classes:</p>
+<ul>
+<li><strong>Melhores:</strong> plaqueta (recall 99,4%), eosinófilo
+(92,3%), neutrófilo (85,4%) e linfócito (83,5%), classes com aparência
+mais distintiva (tamanho, cor, grânulos).</li>
+<li><strong>Piores:</strong> basófilo (63,5%), monócito (67,6%) e
+granulócito imaturo (68,6%).</li>
+</ul>
+<p>Os erros se concentram em torno do <strong>granulócito
+imaturo</strong>: 50 basófilos (20%) e 61 monócitos (21%) foram
+classificados como ele, e ele próprio foi confundido com monócito (64),
+basófilo (45) e neutrófilo (26); 51 neutrófilos também foram rotulados
+como granulócito imaturo. Por isso sua precisão é de apenas 64,6%.
+Biologicamente, essas classes diferem principalmente na forma do núcleo
+e na textura fina dos grânulos, informação espacial que se perde na
+resolução 28×28 e, principalmente, no achatamento (<em>flatten</em>),
+que descarta a vizinhança entre pixels. Isso motiva o uso de CNNs, que
+exploram localidade e compartilhamento de pesos.</p>
+<hr />
+<h2 id="item-b">Item B</h2>
+<h3 id="tabela---decisões-fixadas-de-projeto-cnn">Tabela - Decisões
+Fixadas de Projeto (CNN)</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Configuração</th>
+<th style="text-align: left;">Escolha / Valor</th>
+<th style="text-align: left;">Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Formato de Entrada</strong></td>
+<td style="text-align: left;">Tensor <span
+class="math inline">3 × 28 × 28</span></td>
+<td style="text-align: left;">Preserva a vizinhança espacial e os 3
+canais RGB; diferentemente da MLP, a imagem não é achatada na
+entrada.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Pré-processamento</strong></td>
+<td style="text-align: left;">Escalonamento em <span
+class="math inline">[0.0, 1.0]</span></td>
+<td style="text-align: left;">Mesmo da MLP (divisão por <span
+class="math inline">255</span> via <code>ToTensor()</code>), para
+comparação direta. Sem normalização por média/desvio e sem aumento de
+dados.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Nº de Camadas
+Convolucionais</strong></td>
+<td style="text-align: left;">Exatamente <span
+class="math inline">1</span> camada</td>
+<td style="text-align: left;">Exigência da atividade.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Ativação</strong></td>
+<td style="text-align: left;">ReLU (<span
+class="math inline">max (0, <em>x</em>)</span>)</td>
+<td style="text-align: left;">Mesma justificativa do Item A: não
+linearidade simples, com gradiente 1 para <span
+class="math inline"><em>x</em> &gt; 0</span>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Padding</strong></td>
+<td style="text-align: left;"><em>Same</em> (<span
+class="math inline">$P = \frac{k-1}{2}$</span>)</td>
+<td style="text-align: left;">Mantém <span
+class="math inline">28 × 28</span> após a convolução para qualquer <span
+class="math inline"><em>k</em></span>. Assim, a entrada da camada densa
+(<span class="math inline"><em>K</em> ⋅ 14 ⋅ 14</span>) depende só de
+<span class="math inline"><em>K</em></span>, e a comparação entre
+tamanhos de kernel isola o efeito do campo receptivo.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Passo da Convolução</strong></td>
+<td style="text-align: left;"><span
+class="math inline"><em>S</em> = 1</span></td>
+<td style="text-align: left;">Cada kernel percorre todas as posições,
+sem perder resolução antes do pooling.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Pooling</strong></td>
+<td style="text-align: left;">Max-Pooling <span
+class="math inline">2 × 2</span> (<span
+class="math inline"><em>S</em> = 2</span>)</td>
+<td style="text-align: left;">Reduz <span
+class="math inline">28 × 28 → 14 × 14</span>, o que diminui em <span
+class="math inline">75%</span> o número de ativações (e de pesos da
+camada de saída) e dá tolerância a pequenos deslocamentos. Janela
+pequena porque a imagem já tem baixa resolução.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Camada de Saída</strong></td>
+<td style="text-align: left;">Linear: <span
+class="math inline"><em>K</em> ⋅ 14 ⋅ 14 → 8</span> <em>logits</em></td>
+<td style="text-align: left;">Sem camada densa intermediária: a camada
+convolucional é a única responsável pela extração de atributos. Sem
+Softmax no <em>forward</em>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Dropout</strong></td>
+<td style="text-align: left;">Não utilizado</td>
+<td style="text-align: left;">No Item A o dropout não trouxe ganho
+(melhor resultado com <span class="math inline"><em>p</em> = 0</span>);
+a regularização fica a cargo do <span
+class="math inline"><em>L</em><sub>2</sub></span>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Função de Custo</strong></td>
+<td style="text-align: left;">Entropia Cruzada Multiclasse</td>
+<td style="text-align: left;">Igual ao Item A (Softmax interno,
+numericamente estável).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Otimizador e <span
+class="math inline"><em>L</em><sub>2</sub></span></strong></td>
+<td style="text-align: left;">Adam, weight_decay = <span
+class="math inline">10<sup>−4</sup></span></td>
+<td style="text-align: left;">Mesmos do Item A. o valor de <span
+class="math inline"><em>L</em><sub>2</sub></span> é o usual e não foi
+ajustado.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Taxa de Aprendizado (<span
+class="math inline"><em>η</em></span>)</strong></td>
+<td style="text-align: left;"><span
+class="math inline">10<sup>−3</sup></span></td>
+<td style="text-align: left;">Mesma do Item A. Não foi revalidada para a
+CNN.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Tamanho do Lote</strong></td>
+<td style="text-align: left;"><span class="math inline">64</span>
+amostras</td>
+<td style="text-align: left;">Igual ao Item A, mantendo o mesmo número
+de atualizações por época.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Número de Épocas</strong></td>
+<td style="text-align: left;"><span class="math inline">20</span>
+épocas</td>
+<td style="text-align: left;">Mesmo orçamento do Item A, para comparação
+justa entre as 18 configurações. Os pesos da melhor época (acurácia
+balanceada de validação) são restaurados.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tabela---hiperparâmetros-explorados-na-validação-cnn">Tabela -
+Hiperparâmetros Explorados na Validação (CNN)</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Hiperparâmetro</th>
+<th style="text-align: left;">Valores Candidatos</th>
+<th style="text-align: left;">Propósito da Exploração</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Quantidade de Kernels (<span
+class="math inline"><em>K</em></span>)</strong></td>
+<td style="text-align: left;"><span
+class="math inline">{8, 16, 32, 64, 128, 256}</span></td>
+<td style="text-align: left;">Número de detectores de atributos
+aprendidos em paralelo (profundidade dos <em>feature maps</em>), que
+também define o tamanho da camada de saída (<span
+class="math inline"><em>K</em> ⋅ 196 ⋅ 8</span> pesos). Progressão em
+potências de 2, de uma representação mínima a uma bastante
+redundante.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Tamanho do Kernel (<span
+class="math inline"><em>k</em> × <em>k</em></span>)</strong></td>
+<td style="text-align: left;"><span
+class="math inline">{3 × 3, 5 × 5, 7 × 7}</span></td>
+<td style="text-align: left;">Escala do campo receptivo local: <span
+class="math inline"> ≈ 10, 7%</span>, <span
+class="math inline">17, 9%</span> e <span
+class="math inline">25, 0%</span> da largura da imagem. Kernels pequenos
+tendem a captar detalhes finos (bordas, texturas) e maiores, estruturas
+mais amplas, o que será verificado nos resultados. Só valores ímpares,
+para que o <em>same padding</em> seja simétrico.</td>
+</tr>
+</tbody>
+</table>
+<p>Total: <span class="math inline">6 × 3 = 18</span> configurações.</p>
+<h3 id="validação-1">Validação</h3>
+<div data-align="center">
+<p><img src="../images/bc/tabela_val.png" width="28%">
+<img src="../images/bc/heatmap_validacao.png" width="71%"></p>
+</div>
+<p><br />
+A melhor configuração foi <span
+class="math inline"><em>K</em> = 256</span>, <span
+class="math inline"><em>k</em> = 3 × 3</span> (acurácia balanceada de
+validação 0,9142). Observa-se que:</p>
+<ul>
+<li><p><strong>Todas as 18 CNNs superaram a melhor MLP:</strong> a pior
+(<span class="math inline"><em>K</em> = 8</span>, <span
+class="math inline"><em>k</em> = 5</span>) obteve 0,8302. A melhor CNN
+tem ≈ 409 mil parâmetros, contra ≈ 1,21 milhão da melhor MLP. A vantagem
+vem do fato de a convolução levar em consideração a localidade, com
+compartilhamento de pesos, o que não ocorre na MLP.</p></li>
+<li><p><strong>Mais kernels ajudam, com retorno decrescente:</strong>
+Para <span class="math inline"><em>k</em> = 3</span>, a acurácia sobe de
+0,8352 (<span class="math inline"><em>K</em> = 8</span>) para 0,8793
+(<span class="math inline"><em>K</em> = 16</span>) e depois ganha só ≈
+0,7 a 1 p.p. a cada duplicação. Para <span
+class="math inline"><em>k</em> = 5</span> o ganho satura entre <span
+class="math inline"><em>K</em> = 128</span> e <span
+class="math inline">256</span> (0,9051 → 0,9066).</p></li>
+<li><p><strong>Kernels 3×3 e 5×5 têm desempenho muito próximo:</strong>
+(diferença &lt; 1 p.p. para <span
+class="math inline"><em>K</em> ≤ 128</span>), com leve vantagem do 3×3
+em <span class="math inline"><em>K</em> = 256</span>.</p></li>
+<li><p><strong>O kernel 7×7 foi quase sempre pior</strong> (para <span
+class="math inline"><em>K</em> ≥ 16</span>)<strong>:</strong> Não
+necessariamente melhora junto com o aumento de kernels, há um platô,
+aparentemente. Uma hipótese para isso é que filtros maiores (147 pesos
+por filtro, contra 27 do 3×3) favorecem <em>overfitting</em> ou suavizam
+detalhes finos em imagens de 28×28.</p></li>
+<li><p><strong>Limite do grid e caminhos para melhorar:</strong> O
+melhor resultado está na borda do grid (<span
+class="math inline"><em>K</em> = 256</span>), então valores maiores de
+<span class="math inline"><em>K</em></span> provavelmente renderiam um
+pouco mais. Entretanto, provavelmente esse não é o caminho mais indicado
+para melhorar o desempenho do modelo. O ganho por duplicação já é
+pequeno, enquanto o custo cresce linearmente com <span
+class="math inline"><em>K</em></span> (a camada de saída passa de ≈ 100
+mil parâmetros com <span class="math inline"><em>K</em> = 64</span> para
+≈ 401 mil com <span class="math inline"><em>K</em> = 256</span>).
+Alternativas que fogem da restrição de uma única camada convolucional,
+mas que tendem a ser mais eficientes, são empilhar mais camadas
+convolucionais (aumentando o campo receptivo efetivo com poucos
+parâmetros) e combinar kernels de tamanhos diferentes na mesma camada,
+no estilo Inception. Esta segunda opção é sugerida pelos próprios
+resultados: 3×3 e 5×5 têm desempenho parecido e o 7×7 só ajuda quando há
+poucos kernels, o que indica que escalas diferentes captam informação
+complementar.</p></li>
+</ul>
+<h2 id="item-c">Item C</h2>
+<p>A melhor configuração da busca (<span
+class="math inline"><em>K</em> = 256</span>, <span
+class="math inline"><em>k</em> = 3 × 3</span>) foi retreinada do zero
+utilizando seed = <strong>13</strong> para a inicialização aleatória.
+Este novo treino atingiu 0,9078 de acurácia balanceada na validação.</p>
+<pre><code>Acurácia Balanceada (Validação):    0.9078</code></pre>
+<p>O conjunto de teste foi avaliado uma única vez com esse modelo.</p>
+<h3 id="teste-1">Teste</h3>
+<p>A CNN obteve acurácia balanceada de <strong>0,8892</strong> e F1
+macro de <strong>0,8929</strong> (acurácia simples ≈ 0,906). A queda de
+1,9 p.p. em relação à validação é esperada, pois o modelo (época e
+configuração) foi escolhido pela própria validação. Vale notar que as
+métricas têm variabilidade de ≈ 1 a 2 p.p. entre execuções: uma execução
+independente da mesma configuração (com outro retreinamento) havia
+apresentado 0,9069 de acurácia balanceada no teste, evidenciando a
+variabilidade entre diferentes inicializações.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode txt"><code class="sourceCode default"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Acurácia Balanceada (Teste):    0.8892</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>F1-Score Macro (Teste):         0.8929</span></code></pre></div>
+<p><img src="../images/bc/matriz_conf.png" /></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classe</th>
+<th style="text-align: center;">Precisão</th>
+<th style="text-align: center;">Recall</th>
+<th style="text-align: center;">F1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Basófilo</td>
+<td style="text-align: center;">0,870</td>
+<td style="text-align: center;">0,881</td>
+<td style="text-align: center;">0,876</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Eosinófilo</td>
+<td style="text-align: center;">0,962</td>
+<td style="text-align: center;">0,979</td>
+<td style="text-align: center;">0,971</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Eritroblasto</td>
+<td style="text-align: center;">0,891</td>
+<td style="text-align: center;">0,923</td>
+<td style="text-align: center;">0,907</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Granulócito Imaturo</td>
+<td style="text-align: center;">0,762</td>
+<td style="text-align: center;">0,845</td>
+<td style="text-align: center;">0,801</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Linfócito</td>
+<td style="text-align: center;">0,879</td>
+<td style="text-align: center;">0,893</td>
+<td style="text-align: center;">0,886</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Monócito</td>
+<td style="text-align: center;">0,886</td>
+<td style="text-align: center;">0,655</td>
+<td style="text-align: center;">0,753</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Neutrófilo</td>
+<td style="text-align: center;">0,969</td>
+<td style="text-align: center;">0,940</td>
+<td style="text-align: center;">0,954</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Plaqueta</td>
+<td style="text-align: center;">0,994</td>
+<td style="text-align: center;">0,998</td>
+<td style="text-align: center;">0,996</td>
+</tr>
+</tbody>
+</table>
+<p>As classes mais fáceis são plaqueta (recall 99,8%), eosinófilo
+(97,9%) e neutrófilo (94,0%). O ponto mais fraco é o
+<strong>monócito</strong>, com recall de apenas 65,5%: 83 das 284
+amostras (29%) foram classificadas como granulócito imaturo, enquanto o
+erro inverso é bem menor (18 granulócitos imaturos classificados como
+monócito). Ou seja, a rede tem viés de “atrair” para o granulócito
+imaturo, que tem a menor precisão (76,2%). Os erros desse último são
+espalhados: basófilo (20), monócito (18), eritroblasto (14), linfócito
+(14) e neutrófilo (13), e basófilos, linfócitos e neutrófilos também
+foram confundidos com ele (20, 17 e 18). Ao todo, ≈ 76% dos 321 erros
+envolvem o granulócito imaturo, como classe real ou predita.</p>
+<h3 id="padrões-classificados-incorretamente">Padrões classificados
+incorretamente</h3>
+<p><img src="../images/bc/exemplo_incorreto.png" /></p>
+<p>Os erros mostram comportamentos distintos da rede:</p>
+<ul>
+<li><strong>Erros confiantes (2, 4 e 5):</strong> a rede atribui 96%,
+89% e 78% à classe errada, e à classe real quase nada (≈ 0%, 9% e 3%). O
+Softmax, portanto, não é um bom indicador de incerteza: a rede pode
+errar com convicção.</li>
+<li><strong>Erros ambíguos (1 e 3):</strong> no 1, a probabilidade se
+divide entre eritroblasto (47%) e linfócito (37%), duas células pequenas
+de núcleo redondo e denso. No 3, a distribuição é praticamente plana,
+com cinco classes entre 12% e 25% (basófilo, linfócito, granulócito
+imaturo, neutrófilo e monócito), o que indica que a rede não identificou
+a classe.</li>
+</ul>
+<p>Visualmente, a amostra 2 mostra uma célula fora do centro, com lobos
+do núcleo cortados nas bordas da imagem, e a amostra 3 tem núcleo em
+formato de incomum, sem a segmentação típica de um neutrófilo maduro.
+Nas amostras 4 e 5 o núcleo é grande, arredondado e sem o típico
+“<em>gap</em>” visível, o que pode explicar a confusão com o granulócito
+imaturo.</p>
+<p>Em resumo, os erros restantes se concentram em classes
+morfologicamente próximas, em que a diferença está em detalhes finos do
+núcleo e da cromatina, que a resolução de 28×28 preserva mal, além de
+amostras mal centradas ou ambíguas. Melhorar o desempenho exigiria
+modelos mais expressivos (mais camadas, múltiplas escalas) ou maior
+resolução.</p>
+<hr />
+<h2 id="item-d">Item D</h2>
+<p>Foi escolhida a arquitetura consagrada <strong>ResNet-18</strong> <a
+href="#referências">[7]</a> pré-treinada na base <em>ImageNet</em> (1,28
+milhão de imagens cotidianas de 1.000 categorias).</p>
+<h3 id="decisões-de-projeto-e-adaptações-de-entrada">Decisões de Projeto
+e Adaptações de Entrada</h3>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Configuração</th>
+<th style="text-align: left;">Escolha / Valor</th>
+<th style="text-align: left;">Justificativa Metodológica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Arquitetura Base</strong></td>
+<td style="text-align: left;">ResNet-18 (ImageNet Weights)</td>
+<td style="text-align: left;">Estrutura profunda de 18 camadas com
+conexões residuais (<em>skip connections</em>), altamente eficiente para
+visão computacional.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Redimensionamento</strong></td>
+<td style="text-align: left;"><span
+class="math inline">28 × 28 → 64 × 64</span> pixels</td>
+<td style="text-align: left;">Os filtros convolucionais iniciais da
+ResNet-18 (<span class="math inline">7 × 7</span> com stride 2) foram
+projetados para entradas padrão de <span
+class="math inline">224 × 224</span>. O redimensionamento bilinear para
+<span class="math inline">64 × 64</span> deve ser suficiente para evitar
+uma perda excessiva de resolução espacial nas primeiras camadas.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Normalização</strong></td>
+<td style="text-align: left;">Média/Desvio da ImageNet</td>
+<td style="text-align: left;">Padronização dos canais RGB com <span
+class="math inline"><em>μ</em> = [0.485, 0.456, 0.406]</span> e <span
+class="math inline"><em>σ</em> = [0.229, 0.224, 0.225]</span>, mantendo
+os tensores na faixa esperada pelos pesos pré-treinados.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Cabeça de
+Classificação</strong></td>
+<td style="text-align: left;"><code>nn.Linear(512, 8)</code></td>
+<td style="text-align: left;">Substituição da camada linear original
+(1000 saídas) por uma nova camada densa adaptada às 8 classes do
+BloodMNIST.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Otimizador &amp;
+Regularização</strong></td>
+<td style="text-align: left;">Adam, <code>weight_decay</code> = <span
+class="math inline">10<sup>−4</sup></span></td>
+<td style="text-align: left;">Manutenção do mesmo otimizador adaptativo
+com regularização <span
+class="math inline"><em>L</em><sub>2</sub></span> utilizado nos Itens A
+e B.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Número de Épocas</strong></td>
+<td style="text-align: left;"><span class="math inline">20</span>
+épocas</td>
+<td style="text-align: left;">Orçamento de treinamento mantido idêntico
+ao dos itens anteriores.</td>
+</tr>
+</tbody>
+</table>
+<h3
+id="comparação-no-conjunto-de-validação-com-freeze-vs.-full-fine-tuning">Comparação
+no Conjunto de Validação: <em>Com Freeze</em> vs. <em>Full
+Fine-Tuning</em></h3>
+<p>Investigaram-se duas estratégias fundamentais de Transfer Learning no
+conjunto de validação:</p>
+<ol type="1">
+<li><strong>Com Freeze (<code>freeze_backbone=True</code>):</strong>
+Congelamento de todas as camadas convolucionais pré-treinadas da
+ResNet-18, treinando exclusivamente a nova camada final de
+classificação.</li>
+<li><strong>Full Fine-Tuning
+(<code>freeze_backbone=False</code>):</strong> Atualização de todos os
+pesos da rede partindo dos valores pré-treinados da ImageNet. Para esta
+abordagem, a taxa de aprendizado foi reduzida para <span
+class="math inline"><em>η</em> = 10<sup>−4</sup></span> (contra <span
+class="math inline"><em>η</em> = 10<sup>−3</sup></span> do modo com
+freeze). Essa escolha é crítica: uma taxa menor evita a destruição
+(<em>catastrophic forgetting</em>) dos extratores de atributos
+pré-treinados nas camadas iniciais, permitindo um ajuste fino e delicado
+para o domínio de imagens microscópicas.</li>
+</ol>
+<h4
+id="tabela---desempenho-de-validação-das-estratégias-de-transfer-learning">Tabela
+- Desempenho de Validação das Estratégias de Transfer Learning</h4>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Estratégia</th>
+<th style="text-align: center;">Taxa de Aprendizado (<span
+class="math inline"><em>η</em></span>)</th>
+<th style="text-align: center;">Parâmetros Treináveis</th>
+<th style="text-align: center;">Acurácia Balanceada</th>
+<th style="text-align: center;">Tempo de Treino</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Com Freeze</strong></td>
+<td style="text-align: center;"><span
+class="math inline">10<sup>−3</sup></span></td>
+<td style="text-align: center;">4.104</td>
+<td style="text-align: center;">0,7499</td>
+<td style="text-align: center;">39,16 s</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Full Fine-Tuning</strong></td>
+<td style="text-align: center;"><span
+class="math inline">10<sup>−4</sup></span></td>
+<td style="text-align: center;">11.180.616</td>
+<td style="text-align: center;">0,9570</td>
+<td style="text-align: center;">188,36 s</td>
+</tr>
+</tbody>
+</table>
+<p>O modo <strong>Sem Freeze</strong> foi amplamente superior (ganho de
+20,7 p.p. na acurácia balanceada de validação). Como as imagens de
+células sanguíneas periféricas possuem morfologia muito distinta dos
+objetos cotidianos da ImageNet, permitir a adaptação de todo o
+<em>backbone</em> convolucional provou-se essencial.</p>
+<h3 id="análise-da-validação">Análise da Validação</h3>
+<p><img src="../images/d/val_curves_freeze.png" /> <img
+src="../images/d/val_curves_fine.png" /></p>
+<p><br />
+Ao analisar o treinamento da ResNet-18 sem freeze (Full Fine Tuning) ao
+longo das 20 épocas, observou-se:</p>
+<ul>
+<li><strong>Evolução da Perda:</strong> A perda de treino decaiu de
+forma acentuada de 0,4278 para 0,0168. A perda de validação atingiu seu
+menor valor na época 17 (0,1533), época em que a acurácia balanceada de
+validação atingiu o pico de 0,9570. Nas épocas subsequentes, a perda de
+validação apresentou leve subida, indicando o início de um sobreajuste
+leve, o que justifica a restauração dos pesos da época 17.</li>
+<li><strong>Flutuação da Acurácia Balanceada de Validação:</strong> A
+curva de acurácia de validação exibe oscilação em dente de serra entre.
+Essa variação decorre da combinação entre a decisão discreta do operador
+<em>argmax</em>, o tamanho do conjunto de validação (1.712 imagens, onde
+cada 1% equivale a apenas 17 amostras) e a alta sensibilidade dos
+gradientes no ajuste fino de todas as 18 camadas.</li>
+</ul>
+<h3 id="teste-2">Teste</h3>
+<p>O modelo da ResNet-18 treinado no modo <strong>Sem Freeze</strong>
+(pesos da Época 17) foi avaliado uma única vez no conjunto de teste
+independente.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode txt"><code class="sourceCode default"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Acurácia Balanceada (Teste):    0.9456</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>F1-Score Macro (Teste):         0.9505</span></code></pre></div>
+<p><img src="../images/d/matriz_conf.png" /></p>
+<h4 id="tabela---métricas-detalhadas-por-classe-resnet-18-teste">Tabela
+- Métricas Detalhadas por Classe (ResNet-18 / Teste)</h4>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classe</th>
+<th style="text-align: center;">Precisão</th>
+<th style="text-align: center;">Recall</th>
+<th style="text-align: center;">F1-Score</th>
+<th style="text-align: center;">Amostras (Real)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Basófilo</strong></td>
+<td style="text-align: center;">0,9590</td>
+<td style="text-align: center;">0,9590</td>
+<td style="text-align: center;">0,9590</td>
+<td style="text-align: center;">244</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Eosinófilo</strong></td>
+<td style="text-align: center;">0,9968</td>
+<td style="text-align: center;">0,9920</td>
+<td style="text-align: center;">0,9944</td>
+<td style="text-align: center;">624</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Eritroblasto</strong></td>
+<td style="text-align: center;">0,9641</td>
+<td style="text-align: center;">0,9486</td>
+<td style="text-align: center;">0,9562</td>
+<td style="text-align: center;">311</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Granulócito Imaturo</strong></td>
+<td style="text-align: center;">0,8494</td>
+<td style="text-align: center;">0,9447</td>
+<td style="text-align: center;">0,8945</td>
+<td style="text-align: center;">579</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Linfócito</strong></td>
+<td style="text-align: center;">0,9783</td>
+<td style="text-align: center;">0,9259</td>
+<td style="text-align: center;">0,9514</td>
+<td style="text-align: center;">243</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Monócito</strong></td>
+<td style="text-align: center;">0,9261</td>
+<td style="text-align: center;">0,8380</td>
+<td style="text-align: center;">0,8799</td>
+<td style="text-align: center;">284</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Neutrófilo</strong></td>
+<td style="text-align: center;">0,9830</td>
+<td style="text-align: center;">0,9565</td>
+<td style="text-align: center;">0,9696</td>
+<td style="text-align: center;">666</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Plaqueta</strong></td>
+<td style="text-align: center;">0,9979</td>
+<td style="text-align: center;">1,0000</td>
+<td style="text-align: center;">0,9989</td>
+<td style="text-align: center;">470</td>
+</tr>
+</tbody>
+</table>
+<p>Principais observações sobre o teste:</p>
+<ul>
+<li><strong>Separação Celular de Alta Precisão:</strong> A ResNet-18
+atingiu desempenho próximo da perfeição em plaquetas (recall 100%),
+eosinófilos (99,2%), neutrófilos (95,7%), basófilos (95,9%) e
+eritroblastos (94,9%).</li>
+<li><strong>Gargalo do Granulócito Imaturo:</strong> O gargalo crítico
+observado nas redes anteriores (confusão entre monócito e granulócito
+imaturo) foi mitigado. O recall do monócito saltou de 67,6% (MLP) e
+65,5% (CNN Artesanal) para <strong>83,8%</strong> na ResNet-18.
+Paralelamente, a revocação do granulócito imaturo atingiu
+<strong>94,5%</strong>.</li>
+<li><strong>Profundidade:</strong> a profundidade e os blocos residuais
+da ResNet-18 permitiram extrair hierarquias complexas de características
+que a CNN de camada única não conseguia capturar.</li>
+</ul>
+<h3
+id="comparação-geral-dos-modelos-mlp-cnn-artesanal-transfer">Comparação
+Geral dos Modelos (MLP, CNN Artesanal, Transfer)</h3>
+<p>A tabela a seguir consolida os resultados dos três modelos avaliados
+no projeto:</p>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Modelo</th>
+<th style="text-align: center;">Acurácia Balanceada (Teste)</th>
+<th style="text-align: center;"><span
+class="math inline"><em>F</em><sub>1</sub></span>-Score Macro
+(Teste)</th>
+<th style="text-align: center;">Parâmetros Treináveis</th>
+<th style="text-align: center;">Tempo de Treinamento (GPU)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>MLP (Item A - <span
+class="math inline"><em>N</em><sub>oculta</sub> = 512</span>)</strong></td>
+<td style="text-align: center;">0,7953</td>
+<td style="text-align: center;">0,7952</td>
+<td style="text-align: center;">1.210 k</td>
+<td style="text-align: center;"><span class="math inline">≈</span> 20
+s</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>CNN Artesanal (Item B/C - K=256,
+k=3)</strong></td>
+<td style="text-align: center;">0,8892</td>
+<td style="text-align: center;">0,8929</td>
+<td style="text-align: center;">409 k</td>
+<td style="text-align: center;"><span class="math inline">≈</span> 70
+s</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>ResNet-18 Transfer Learning (Full
+FIne-Tuning)</strong></td>
+<td style="text-align: center;">0,9456</td>
+<td style="text-align: center;">0,9505</td>
+<td style="text-align: center;">11.180 k</td>
+<td style="text-align: center;"><span class="math inline">≈</span> 180
+s</td>
+</tr>
+</tbody>
+</table>
+<h3 id="discussão-final">Discussão Final</h3>
+<h4
+id="importância-do-viés-indutivo-convolucional-mlp-vs.-cnn-artesanal">1.
+Importância do Viés Indutivo Convolucional (MLP vs. CNN Artesanal)</h4>
+<p>A CNN Artesanal, mesmo possuindo cerca de 3 vezes menos parâmetros
+que a MLP (409 k vs. 1.210 k), superou a MLP em +9,39 p.p. na acurácia
+balanceada de teste. O <em>flatten</em> prematuro da imagem na MLP
+destrói a topologia 2D e força a rede a aprender relações espaciais do
+zero. A convolução, ao contrário, aplica viés indutivo de localidade e
+compartilhamento de pesos, garantindo maior eficiência de
+parâmetros.</p>
+<h4
+id="impacto-do-transfer-learning-e-da-profundidade-cnn-artesanal-vs.-resnet-18">2.
+Impacto do Transfer Learning e da Profundidade (CNN Artesanal
+vs. ResNet-18)</h4>
+<p>O salto de desempenho da CNN Artesanal para a ResNet-18 (<span
+class="math inline">0, 8892 → 0, 9456</span>, ganho de <span
+class="math inline">+5, 64</span> p.p.) demonstra o valor de
+arquiteturas profundas com conexões residuais e inicialização
+pré-treinada. Uma única camada convolucional atinge um limite de
+representação física (apenas atributos de baixo nível), enquanto a
+ResNet-18 constrói representações abstratas complexas.</p>
+<h4 id="análise-do-tempo-de-treinamento-e-custo-computacional">3.
+Análise do Tempo de Treinamento e Custo Computacional</h4>
+<ul>
+<li><strong>MLP (<span class="math inline">≈</span> 20 s):</strong>
+Extremamente rápida devido a operações puramente matriciais e ausência
+de janelas deslizantes 2D, mas ineficiente em termos de acurácia por
+parâmetro.</li>
+<li><strong>CNN Artesanal (<span class="math inline">≈</span> 70
+s):</strong> Aumento moderado de tempo (<span
+class="math inline">3×</span> em relação à MLP) decorrente do produto
+escalar convolucional de 256 filtros deslizando sobre o mapa <span
+class="math inline">28 × 28</span>. Apresenta o <strong>melhor
+custo-benefício computacional</strong>, entregando 88,92% de acurácia
+com apenas 409 k parâmetros.</li>
+<li><strong>ResNet-18 Full Fine-Tuning (<span
+class="math inline">≈</span> 180 s):</strong> Exigiu o maior tempo de
+treinamento. Esse custo deve-se a três fatores: o redimensionamento
+bilinear das imagens de <span class="math inline">28 × 28</span> para
+<span class="math inline">64 × 64</span> (<span
+class="math inline">5, 2×</span> mais pixels por imagem), a propagação
+direta e reversa (<em>forward/backward pass</em>) através de 18 camadas
+profundas com normalização em lote (<em>Batch Normalization</em>) e a
+atualização de <span class="math inline">11, 18</span> milhões de
+parâmetros a cada mini-batch.</li>
+</ul>
+<p>Apesar de ser mais custosa temporariamente, uma execução de <span
+class="math inline"> ≈ 3</span> minutos em GPU é perfeitamente viável em
+ambientes práticos e acadêmicos. O ganho de precisão diagnóstica em um
+contexto médico justificaria plenamente o custo computacional
+superior.</p>
+<hr />
+<h2 id="referências">Referências</h2>
+<ol type="1">
+<li>TochaFh/IA048-ML-Atividades (repositório com as atividades na
+disciplina IA048 em 2s2026)
+https://github.com/TochaFh/IA048-ML-Atividades</li>
+<li>Paszke et al., PyTorch: An Imperative Style, High-Performance Deep
+Learning Library, NeurIPS 2019.</li>
+<li>Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12,
+pp. 2825-2830, 2011. https://scikit-learn.org/stable/</li>
+<li>Plotly-express. https://plotly.com/python/plotly-express/</li>
+<li>Cookiecutter Data Science.
+https://cookiecutter-data-science.drivendata.org/</li>
+<li>Yang et al., MedMNIST v2, Scientific Data, 2023</li>
+<li>He et al., Deep Residual Learning for Image Recognition, IEEE
+Conference on Computer Vision and Pattern Recognition (CVPR),
+pp. 770-778, 2016. https://arxiv.org/abs/1512.03385</li>
+</ol>
+</body>
+</html>
