@@ -8,4 +8,5 @@ Requires-Dist: matplotlib
 Requires-Dist: scikit-learn
 Requires-Dist: nbformat
 Requires-Dist: ipykernel
+Requires-Dist: torch
 Requires-Dist: medmnist

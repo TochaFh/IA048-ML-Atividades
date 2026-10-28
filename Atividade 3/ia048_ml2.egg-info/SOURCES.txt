@@ -8,3 +8,4 @@ ml3/__init__.py
 ml3/cnn_bc.py
 ml3/config.py
 ml3/mlp_a.py
+ml3/transfer_d.py

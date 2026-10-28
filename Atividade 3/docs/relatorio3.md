@@ -29,7 +29,7 @@ O projeto da MLP pode ser resumido em duas tabelas: decisões / hiper parâmetro
 | **Camada de Saída** | $8$ neurônios (*Logits* brutos) | Corresponde às 8 classes de células sanguíneas, sem ativação no *forward*. |
 | **Função de Custo** | Entropia Cruzada Multiclasse | Aplica o Softmax internamente com estabilidade numérica. |
 | **Otimizador** | Adam | Algoritmo com taxas de aprendizado adaptativas e rápida convergência. |
-| **Regularização $L_2$** | weight_decay = $10^{-4}$ | É o valor usual para o Adam no PyTorch (deve restringir a magnitude dos pesos e evitar *overfitting*) |
+| **Regularização $L_2$** | weight_decay = $10^{-4}$ | Valor comum em experimentos de treinamento de redes neurais, adotado aqui sem exploração adicional. |
 | **Taxa de Aprendizado ($\eta$)** | $10^{-3}$ | Em uma exploração preliminar, $10^{-4}$ teve um desempenho pior em todos os casos testados, provavelmente por convergência lenta em 20 épocas. Para reduzir o tamanho da busca, então, optou-se por fixar $10^{-3}$. |
 | **Número de Épocas** | $20$ épocas | Compromisso entre custo computacional (12 configurações) e convergência com $\eta = 10^{-3}$. A melhor época é escolhida pela acurácia balanceada de validação. |
 | **Tamanho do Lote (*Batch Size*)** | $64$ amostras | Lotes pequenos dão mais atualizações por época e o ruído do gradiente atua como regularização leve, o que favorece a convergência em apenas 20 épocas. |
@@ -111,7 +111,7 @@ Os erros se concentram em torno do **granulócito imaturo**: 50 basófilos (20%)
 | **Camada de Saída** | Linear: $K \cdot 14 \cdot 14 \to 8$ *logits* | Sem camada densa intermediária: a camada convolucional é a única responsável pela extração de atributos. Sem Softmax no *forward*. |
 | **Dropout** | Não utilizado | No Item A o dropout não trouxe ganho (melhor resultado com $p = 0$); a regularização fica a cargo do $L_2$. |
 | **Função de Custo** | Entropia Cruzada Multiclasse | Igual ao Item A (Softmax interno, numericamente estável). |
-| **Otimizador e $L_2$** | Adam, `weight_decay` = $10^{-4}$ | Mesmos do Item A; o valor de $L_2$ é o usual e não foi ajustado. |
+| **Otimizador e $L_2$** | Adam, weight_decay = $10^{-4}$ | Mesmos do Item A. o valor de $L_2$ é o usual e não foi ajustado. |
 | **Taxa de Aprendizado ($\eta$)** | $10^{-3}$ | Mesma do Item A. Não foi revalidada para a CNN. |
 | **Tamanho do Lote** | $64$ amostras | Igual ao Item A, mantendo o mesmo número de atualizações por época. |
 | **Número de Épocas** | $20$ épocas | Mesmo orçamento do Item A, para comparação justa entre as 18 configurações. Os pesos da melhor época (acurácia balanceada de validação) são restaurados. |
@@ -138,19 +138,15 @@ A melhor configuração foi $K = 256$, $k = 3 \times 3$ (acurácia balanceada de
 - **Todas as 18 CNNs superaram a melhor MLP:** a pior ($K = 8$, $k = 5$) obteve 0,8302. A melhor CNN tem ≈ 409 mil parâmetros, contra ≈ 1,21 milhão da melhor MLP. A vantagem vem do fato de a convolução levar em consideração a localidade, com compartilhamento de pesos, o que não ocorre na MLP.
 - **Mais kernels ajudam, com retorno decrescente:** Para $k = 3$, a acurácia sobe de 0,8352 ($K = 8$) para 0,8793 ($K = 16$) e depois ganha só ≈ 0,7 a 1 p.p. a cada duplicação. Para $k = 5$ o ganho satura entre $K = 128$ e $256$ (0,9051 → 0,9066).
 - **Kernels 3×3 e 5×5 têm desempenho muito próximo:** (diferença < 1 p.p. para $K \le 128$), com leve vantagem do 3×3 em $K = 256$.
-- **O kernel 7×7 foi quase sempre pior** (para $K \ge 16$)**:** Não necessariamente melhora junto com o aumento de kernels, há um platô, aparentemente. Uma hipótese para isso é que filtros maiores (147 pesos por filtro, contra 27 do 3×3) favorecem *overfitting* ou suavizam detalhes finos em imagens de 28×28; comparar a acurácia de treino e de validação confirmaria isso.
+- **O kernel 7×7 foi quase sempre pior** (para $K \ge 16$)**:** Não necessariamente melhora junto com o aumento de kernels, há um platô, aparentemente. Uma hipótese para isso é que filtros maiores (147 pesos por filtro, contra 27 do 3×3) favorecem *overfitting* ou suavizam detalhes finos em imagens de 28×28.
 
 
 - **Limite do grid e caminhos para melhorar:** O melhor resultado está na borda do grid ($K = 256$), então valores maiores de $K$ provavelmente renderiam um pouco mais. Entretanto, provavelmente esse não é o caminho mais indicado para melhorar o desempenho do modelo. O ganho por duplicação já é pequeno, enquanto o custo cresce linearmente com $K$ (a camada de saída passa de ≈ 100 mil parâmetros com $K = 64$ para ≈ 401 mil com $K = 256$). Alternativas que fogem da restrição de uma única camada convolucional, mas que tendem a ser mais eficientes, são empilhar mais camadas convolucionais (aumentando o campo receptivo efetivo com poucos parâmetros) e combinar kernels de tamanhos diferentes na mesma camada, no estilo Inception. Esta segunda opção é sugerida pelos próprios resultados: 3×3 e 5×5 têm desempenho parecido e o 7×7 só ajuda quando há poucos kernels, o que indica que escalas diferentes captam informação complementar.
 
-## Item C
-
-
-
 
 ## Item C
 
-A melhor configuração da busca ($K = 256$, $k = 3 \times 3$) foi retreinada do zero, com o uma seed no valor gerado aleatoriamente: 13. Este novo treino atingiu 0,9078 de acurácia balanceada na validação.
+A melhor configuração da busca ($K = 256$, $k = 3 \times 3$) foi retreinada do zero utilizando seed = **13** para a inicialização aleatória. Este novo treino atingiu 0,9078 de acurácia balanceada na validação.
 
 ```
 Acurácia Balanceada (Validação):    0.9078
@@ -160,7 +156,7 @@ O conjunto de teste foi avaliado uma única vez com esse modelo.
 
 ### Teste
 
-A CNN obteve acurácia balanceada de **0,8892** e F1 macro de **0,8929** (acurácia simples ≈ 0,906). A queda de 1,9 p.p. em relação à validação é esperada, pois o modelo (época e configuração) foi escolhido pela própria validação. Vale notar que a execução da busca, com a mesma configuração, havia obtido 0,9069 no teste: as métricas têm variabilidade de ≈ 1 a 2 p.p. entre execuções, e os resultados aqui são de uma única execução.
+A CNN obteve acurácia balanceada de **0,8892** e F1 macro de **0,8929** (acurácia simples ≈ 0,906). A queda de 1,9 p.p. em relação à validação é esperada, pois o modelo (época e configuração) foi escolhido pela própria validação. Vale notar que as métricas têm variabilidade de ≈ 1 a 2 p.p. entre execuções: uma execução independente da mesma configuração (com outro retreinamento) havia apresentado 0,9069 de acurácia balanceada no teste, evidenciando a variabilidade entre diferentes inicializações.
 
 ```txt
 Acurácia Balanceada (Teste):    0.8892
@@ -197,6 +193,109 @@ Em resumo, os erros restantes se concentram em classes morfologicamente próxima
 
 ---
 
+## Item D
+
+Foi escolhida a arquitetura consagrada **ResNet-18** [[7]](#referências) pré-treinada na base *ImageNet* (1,28 milhão de imagens cotidianas de 1.000 categorias).
+
+### Decisões de Projeto e Adaptações de Entrada
+
+| Configuração | Escolha / Valor | Justificativa Metodológica |
+| :--- | :--- | :--- |
+| **Arquitetura Base** | ResNet-18 (ImageNet Weights) | Estrutura profunda de 18 camadas com conexões residuais (*skip connections*), altamente eficiente para visão computacional. |
+| **Redimensionamento** | $28 \times 28 \to 64 \times 64$ pixels | Os filtros convolucionais iniciais da ResNet-18 ($7 \times 7$ com stride 2) foram projetados para entradas padrão de $224 \times 224$. O redimensionamento bilinear para $64 \times 64$ deve ser suficiente para evitar uma perda excessiva de resolução espacial nas primeiras camadas. |
+| **Normalização** | Média/Desvio da ImageNet | Padronização dos canais RGB com $\mu = [0.485, 0.456, 0.406]$ e $\sigma = [0.229, 0.224, 0.225]$, mantendo os tensores na faixa esperada pelos pesos pré-treinados. |
+| **Cabeça de Classificação** | `nn.Linear(512, 8)` | Substituição da camada linear original (1000 saídas) por uma nova camada densa adaptada às 8 classes do BloodMNIST. |
+| **Otimizador & Regularização** | Adam, `weight_decay` = $10^{-4}$ | Manutenção do mesmo otimizador adaptativo com regularização $L_2$ utilizado nos Itens A e B. |
+| **Número de Épocas** | $20$ épocas | Orçamento de treinamento mantido idêntico ao dos itens anteriores. |
+
+
+### Comparação no Conjunto de Validação: *Com Freeze* vs. *Full Fine-Tuning*
+
+Investigaram-se duas estratégias fundamentais de Transfer Learning no conjunto de validação:
+
+1. **Com Freeze (`freeze_backbone=True`):** Congelamento de todas as camadas convolucionais pré-treinadas da ResNet-18, treinando exclusivamente a nova camada final de classificação.
+2. **Full Fine-Tuning (`freeze_backbone=False`):** Atualização de todos os pesos da rede partindo dos valores pré-treinados da ImageNet. Para esta abordagem, a taxa de aprendizado foi reduzida para $\eta = 10^{-4}$ (contra $\eta = 10^{-3}$ do modo com freeze). Essa escolha é crítica: uma taxa menor evita a destruição (*catastrophic forgetting*) dos extratores de atributos pré-treinados nas camadas iniciais, permitindo um ajuste fino e delicado para o domínio de imagens microscópicas.
+
+#### Tabela - Desempenho de Validação das Estratégias de Transfer Learning
+
+| Estratégia | Taxa de Aprendizado ($\eta$) | Parâmetros Treináveis | Acurácia Balanceada | Tempo de Treino |
+| :--- | :---: | :---: | :---: | :---: |
+| **Com Freeze** | $10^{-3}$ | 4.104 | 0,7499 | 39,16 s |
+| **Full Fine-Tuning** | $10^{-4}$ | 11.180.616 | 0,9570 | 188,36 s |
+
+O modo **Sem Freeze** foi amplamente superior (ganho de 20,7 p.p. na acurácia balanceada de validação). Como as imagens de células sanguíneas periféricas possuem morfologia muito distinta dos objetos cotidianos da ImageNet, permitir a adaptação de todo o *backbone* convolucional provou-se essencial.
+
+
+### Análise da Validação
+
+![](../images/d/val_curves_freeze.png)
+![](../images/d/val_curves_fine.png)
+
+\
+Ao analisar o treinamento da ResNet-18 sem freeze (Full Fine Tuning) ao longo das 20 épocas, observou-se:
+
+- **Evolução da Perda:** A perda de treino decaiu de forma acentuada de 0,4278 para 0,0168. A perda de validação atingiu seu menor valor na época 17 (0,1533), época em que a acurácia balanceada de validação atingiu o pico de 0,9570. Nas épocas subsequentes, a perda de validação apresentou leve subida, indicando o início de um sobreajuste leve, o que justifica a restauração dos pesos da época 17.
+- **Flutuação da Acurácia Balanceada de Validação:** A curva de acurácia de validação exibe oscilação em dente de serra entre. Essa variação decorre da combinação entre a decisão discreta do operador *argmax*, o tamanho do conjunto de validação (1.712 imagens, onde cada 1% equivale a apenas 17 amostras) e a alta sensibilidade dos gradientes no ajuste fino de todas as 18 camadas.
+
+
+### Teste
+
+O modelo da ResNet-18 treinado no modo **Sem Freeze** (pesos da Época 17) foi avaliado uma única vez no conjunto de teste independente.
+
+```txt
+Acurácia Balanceada (Teste):    0.9456
+F1-Score Macro (Teste):         0.9505
+```
+![](../images/d/matriz_conf.png)
+
+#### Tabela - Métricas Detalhadas por Classe (ResNet-18 / Teste)
+
+| Classe | Precisão | Recall | F1-Score | Amostras (Real) |
+| :--- | :---: | :---: | :---: | :---: |
+| **Basófilo** | 0,9590 | 0,9590 | 0,9590 | 244 |
+| **Eosinófilo** | 0,9968 | 0,9920 | 0,9944 | 624 |
+| **Eritroblasto** | 0,9641 | 0,9486 | 0,9562 | 311 |
+| **Granulócito Imaturo** | 0,8494 | 0,9447 | 0,8945 | 579 |
+| **Linfócito** | 0,9783 | 0,9259 | 0,9514 | 243 |
+| **Monócito** | 0,9261 | 0,8380 | 0,8799 | 284 |
+| **Neutrófilo** | 0,9830 | 0,9565 | 0,9696 | 666 |
+| **Plaqueta** | 0,9979 | 1,0000 | 0,9989 | 470 |
+
+Principais observações sobre o teste:
+
+- **Separação Celular de Alta Precisão:** A ResNet-18 atingiu desempenho próximo da perfeição em plaquetas (recall 100%), eosinófilos (99,2%), neutrófilos (95,7%), basófilos (95,9%) e eritroblastos (94,9%).
+- **Gargalo do Granulócito Imaturo:** O gargalo crítico observado nas redes anteriores (confusão entre monócito e granulócito imaturo) foi mitigado. O recall do monócito saltou de 67,6% (MLP) e 65,5% (CNN Artesanal) para **83,8%** na ResNet-18. Paralelamente, a revocação do granulócito imaturo atingiu **94,5%**.
+- **Profundidade:** a profundidade e os blocos residuais da ResNet-18 permitiram extrair hierarquias complexas de características que a CNN de camada única não conseguia capturar.
+
+
+### Comparação Geral dos Modelos (MLP, CNN Artesanal, Transfer)
+
+A tabela a seguir consolida os resultados dos três modelos avaliados no projeto:
+
+| Modelo | Acurácia Balanceada (Teste) | $F_1$-Score Macro (Teste) | Parâmetros Treináveis | Tempo de Treinamento (GPU) |
+| :--- | :---: | :---: | :---: | :---: |
+| **MLP (Item A - $N_{\text{oculta}}=512$)** | 0,7953 | 0,7952 | 1.210 k | $\approx$ 20 s |
+| **CNN Artesanal (Item B/C - K=256, k=3)** | 0,8892 | 0,8929 | 409 k | $\approx$ 70 s |
+| **ResNet-18 Transfer Learning (Full FIne-Tuning)** | 0,9456 | 0,9505 | 11.180 k | $\approx$ 180 s |
+
+
+### Discussão Final
+
+#### 1. Importância do Viés Indutivo Convolucional (MLP vs. CNN Artesanal)
+A CNN Artesanal, mesmo possuindo cerca de 3 vezes menos parâmetros que a MLP (409 k vs. 1.210 k), superou a MLP em +9,39 p.p. na acurácia balanceada de teste. O *flatten* prematuro da imagem na MLP destrói a topologia 2D e força a rede a aprender relações espaciais do zero. A convolução, ao contrário, aplica viés indutivo de localidade e compartilhamento de pesos, garantindo maior eficiência de parâmetros.
+
+#### 2. Impacto do Transfer Learning e da Profundidade (CNN Artesanal vs. ResNet-18)
+O salto de desempenho da CNN Artesanal para a ResNet-18 ($0{,}8892 \to 0{,}9456$, ganho de $+5{,}64$ p.p.) demonstra o valor de arquiteturas profundas com conexões residuais e inicialização pré-treinada. Uma única camada convolucional atinge um limite de representação física (apenas atributos de baixo nível), enquanto a ResNet-18 constrói representações abstratas complexas.
+
+#### 3. Análise do Tempo de Treinamento e Custo Computacional
+- **MLP ($\approx$ 20 s):** Extremamente rápida devido a operações puramente matriciais e ausência de janelas deslizantes 2D, mas ineficiente em termos de acurácia por parâmetro.
+- **CNN Artesanal ($\approx$ 70 s):** Aumento moderado de tempo ($3\times$ em relação à MLP) decorrente do produto escalar convolucional de 256 filtros deslizando sobre o mapa $28 \times 28$. Apresenta o **melhor custo-benefício computacional**, entregando 88,92% de acurácia com apenas 409 k parâmetros.
+- **ResNet-18 Full Fine-Tuning ($\approx$ 180 s):** Exigiu o maior tempo de treinamento. Esse custo deve-se a três fatores: o redimensionamento bilinear das imagens de $28 \times 28$ para $64 \times 64$ ($5,2\times$ mais pixels por imagem), a propagação direta e reversa (*forward/backward pass*) através de 18 camadas profundas com normalização em lote (*Batch Normalization*) e a atualização de $11,18$ milhões de parâmetros a cada mini-batch.
+
+Apesar de ser mais custosa temporariamente, uma execução de $\approx 3$ minutos em GPU é perfeitamente viável em ambientes práticos e acadêmicos. O ganho de precisão diagnóstica em um contexto médico justificaria plenamente o custo computacional superior.
+
+---
+
 ## Referências
 
 1. TochaFh/IA048-ML-Atividades (repositório com as atividades na disciplina IA048 em 2s2026) https://github.com/TochaFh/IA048-ML-Atividades
@@ -205,3 +304,4 @@ Em resumo, os erros restantes se concentram em classes morfologicamente próxima
 4. Plotly-express. https://plotly.com/python/plotly-express/
 5. Cookiecutter Data Science. https://cookiecutter-data-science.drivendata.org/
 6. Yang et al., MedMNIST v2, Scientific Data, 2023
+7. He et al., Deep Residual Learning for Image Recognition, IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 770-778, 2016. https://arxiv.org/abs/1512.03385
